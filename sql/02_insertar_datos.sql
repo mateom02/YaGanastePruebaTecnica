@@ -1,0 +1,90 @@
+-- =====================================================
+-- Script de Inserción de Datos de Prueba
+-- Sistema de Gestión de Usuarios y Tarjetas
+-- =====================================================
+
+-- =====================================================
+-- INSERTAR USUARIOS
+-- =====================================================
+INSERT INTO USUARIOS (ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, ACTIVO)
+VALUES (USUARIO_SEQ.NEXTVAL, 'Juan', 'Pérez García', 'juan.perez@email.com', '5551234567', 1);
+
+INSERT INTO USUARIOS (ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, ACTIVO)
+VALUES (USUARIO_SEQ.NEXTVAL, 'María', 'López Hernández', 'maria.lopez@email.com', '5559876543', 1);
+
+INSERT INTO USUARIOS (ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, ACTIVO)
+VALUES (USUARIO_SEQ.NEXTVAL, 'Carlos', 'Ramírez Torres', 'carlos.ramirez@email.com', '5552468135', 1);
+
+INSERT INTO USUARIOS (ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, ACTIVO)
+VALUES (USUARIO_SEQ.NEXTVAL, 'Ana', 'Martínez Gómez', 'ana.martinez@email.com', '5553691472', 1);
+
+INSERT INTO USUARIOS (ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, ACTIVO)
+VALUES (USUARIO_SEQ.NEXTVAL, 'Pedro', 'González Sánchez', 'pedro.gonzalez@email.com', '5558527419', 0);
+
+-- =====================================================
+-- INSERTAR TARJETAS DE CRÉDITO
+-- =====================================================
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, LIMITE_CREDITO, TASA_INTERES)
+VALUES (TARJETA_SEQ.NEXTVAL, 'CREDITO', '4532123456789012', 'Juan Pérez García', 
+        TO_DATE('2027-12-31', 'YYYY-MM-DD'), 50000.00, 1, 1, 50000.00, 18.00);
+
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, LIMITE_CREDITO, TASA_INTERES)
+VALUES (TARJETA_SEQ.NEXTVAL, 'CREDITO', '4532987654321098', 'María López Hernández', 
+        TO_DATE('2028-06-30', 'YYYY-MM-DD'), 75000.00, 1, 2, 75000.00, 16.50);
+
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, LIMITE_CREDITO, TASA_INTERES)
+VALUES (TARJETA_SEQ.NEXTVAL, 'CREDITO', '4532555666777888', 'Carlos Ramírez Torres', 
+        TO_DATE('2026-09-30', 'YYYY-MM-DD'), 30000.00, 1, 3, 100000.00, 20.00);
+
+-- =====================================================
+-- INSERTAR TARJETAS DE DÉBITO
+-- =====================================================
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, CUENTA_ASOCIADA, PERMITE_SOBREGIRO, LIMITE_SOBREGIRO)
+VALUES (TARJETA_SEQ.NEXTVAL, 'DEBITO', '5123456789012345', 'Juan Pérez García', 
+        TO_DATE('2026-06-30', 'YYYY-MM-DD'), 25000.50, 1, 1, '0123456789', 1, 5000.00);
+
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, CUENTA_ASOCIADA, PERMITE_SOBREGIRO, LIMITE_SOBREGIRO)
+VALUES (TARJETA_SEQ.NEXTVAL, 'DEBITO', '5123111222333444', 'María López Hernández', 
+        TO_DATE('2027-03-31', 'YYYY-MM-DD'), 18750.75, 1, 2, '9876543210', 0, 0.00);
+
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, CUENTA_ASOCIADA, PERMITE_SOBREGIRO, LIMITE_SOBREGIRO)
+VALUES (TARJETA_SEQ.NEXTVAL, 'DEBITO', '5123999888777666', 'Ana Martínez Gómez', 
+        TO_DATE('2028-12-31', 'YYYY-MM-DD'), 42300.00, 1, 4, '5555666677', 1, 10000.00);
+
+-- =====================================================
+-- INSERTAR TARJETAS DE NÓMINA
+-- =====================================================
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, EMPRESA, NUMERO_EMPLEADO, DEPOSITO_MENSUAL)
+VALUES (TARJETA_SEQ.NEXTVAL, 'NOMINA', '6011123456789012', 'Juan Pérez García', 
+        TO_DATE('2028-12-31', 'YYYY-MM-DD'), 32500.00, 1, 1, 'TechCorp SA', 'EMP001', 32500.00);
+
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, EMPRESA, NUMERO_EMPLEADO, DEPOSITO_MENSUAL)
+VALUES (TARJETA_SEQ.NEXTVAL, 'NOMINA', '6011222333444555', 'Carlos Ramírez Torres', 
+        TO_DATE('2027-08-31', 'YYYY-MM-DD'), 28000.00, 1, 3, 'InnovateSoft', 'EMP045', 28000.00);
+
+INSERT INTO TARJETAS (ID, TIPO_TARJETA, NUMERO_TARJETA, TITULAR, FECHA_VENCIMIENTO, 
+                      SALDO, ACTIVA, USUARIO_ID, EMPRESA, NUMERO_EMPLEADO, DEPOSITO_MENSUAL)
+VALUES (TARJETA_SEQ.NEXTVAL, 'NOMINA', '6011777888999000', 'Ana Martínez Gómez', 
+        TO_DATE('2029-01-31', 'YYYY-MM-DD'), 45000.00, 1, 4, 'Global Industries', 'EMP123', 45000.00);
+
+-- =====================================================
+-- COMMIT de los cambios
+-- =====================================================
+COMMIT;
+
+-- =====================================================
+-- VERIFICAR INSERCIÓN
+-- =====================================================
+SELECT 'Usuarios insertados: ' || COUNT(*) AS RESULTADO FROM USUARIOS;
+SELECT 'Tarjetas insertadas: ' || COUNT(*) AS RESULTADO FROM TARJETAS;
+SELECT 'Tarjetas de Crédito: ' || COUNT(*) AS RESULTADO FROM TARJETAS WHERE TIPO_TARJETA = 'CREDITO';
+SELECT 'Tarjetas de Débito: ' || COUNT(*) AS RESULTADO FROM TARJETAS WHERE TIPO_TARJETA = 'DEBITO';
+SELECT 'Tarjetas de Nómina: ' || COUNT(*) AS RESULTADO FROM TARJETAS WHERE TIPO_TARJETA = 'NOMINA';
