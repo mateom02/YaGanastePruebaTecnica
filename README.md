@@ -55,12 +55,12 @@ spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
 ```
 
 Crea un usuario en SQL
-'''sql 
+```sql
 CONN/AS SYSDBA
 ALTER SESSION SET "_ORACLE_SCRIPT"=TRUE
 CREATE USER TuUsuario IDENTIFIED BY tuPassword
 GRANT DBA TO TuUsuario
-'''
+```
 
 Copia, pega y ejecuta el contenido de PruebaTecnicaYaGanaste.txt
 
@@ -89,8 +89,6 @@ http://localhost:8080/swagger-ui/index.html
 Desde Swagger UI puedes explorar y probar todos los endpoints disponibles para la gestión de usuarios y tarjetas.
 
 ---
-
-
 ## 🛠️ Tecnologías utilizadas
 
 - **Java 17**
