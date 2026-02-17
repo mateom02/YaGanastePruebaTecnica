@@ -15,16 +15,16 @@ public class TarjetaCredito extends Tarjeta {
     
     @NotNull(message = "El límite de crédito es obligatorio")
     @Positive(message = "El límite de crédito debe ser positivo")
-    @Column(name = "LIMITE_CREDITO", precision = 15, scale = 2)
+    @Column(name = "limitecredito", precision = 15, scale = 2)
     private BigDecimal limiteCredito;
     
-    @Column(name = "TASA_INTERES", precision = 5, scale = 2)
+    @Column(name = "tasainteres", precision = 5, scale = 2)
     private BigDecimal tasaInteres;
     
     // Constructor por defecto
     public TarjetaCredito() {
         super();
-        this.tasaInteres = new BigDecimal("18.00"); // Tasa por defecto
+        this.tasaInteres = new BigDecimal("18.00"); 
     }
     
     // Constructor con parámetros

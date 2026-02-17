@@ -14,10 +14,10 @@ public class TarjetaDebito extends Tarjeta {
     @Column(name = "cuentaasociada", length = 20)
     private String cuentaAsociada;
     
-    @Column(name = "PERMITE_SOBREGIRO")
+    @Column(name = "permitesobregiro")
     private Boolean permiteSobregiro = false;
     
-    @Column(name = "LIMITE_SOBREGIRO", precision = 15, scale = 2)
+    @Column(name = "limitesobregiro", precision = 15, scale = 2)
     private BigDecimal limiteSobregiro;
     
     // Constructor por defecto

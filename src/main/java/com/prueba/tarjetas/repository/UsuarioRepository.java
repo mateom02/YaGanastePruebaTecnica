@@ -18,11 +18,4 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     List<Usuario> findByActivo(Boolean activo);
 
-    @Query("SELECT u FROM Usuario u WHERE "
-            + "LOWER(u.nombre) LIKE LOWER(CONCAT('%', :busqueda, '%')) OR "
-            + "LOWER(u.apellido) LIKE LOWER(CONCAT('%', :busqueda, '%'))")
-    List<Usuario> buscarPorNombreOApellido(@Param("busqueda") String busqueda);
-
-    @Query("SELECT DISTINCT u FROM Usuario u LEFT JOIN FETCH u.tarjetas WHERE u.id = :id")
-    Optional<Usuario> findByIdWithTarjetas(@Param("id") Long id);
 }

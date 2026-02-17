@@ -15,90 +15,50 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tarjetas")
 @CrossOrigin(origins = "*")
 public class TarjetaController {
-    
+
     @Autowired
     private TarjetaService tarjetaService;
-    
+
     @PostMapping
     public ResponseEntity<Result> crearTarjeta(@Valid @RequestBody TarjetaCreateDTO dto,
-                                                BindingResult bindingResult) {
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errores = bindingResult.getAllErrors().stream()
                     .map(error -> error.getDefaultMessage())
                     .reduce("", (a, b) -> a + "; " + b);
             return ResponseEntity.badRequest().body(Result.error("Errores de validación: " + errores));
         }
-        
+
         Result resultado = tarjetaService.crearTarjeta(dto);
-        
+
         if (resultado.correct) {
             return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
         } else {
             return ResponseEntity.badRequest().body(resultado);
         }
     }
-    
+
     @GetMapping
     public ResponseEntity<Result> obtenerTodas() {
         Result resultado = tarjetaService.obtenerTodas();
         return ResponseEntity.ok(resultado);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<Result> obtenerPorId(@PathVariable Long id) {
         Result resultado = tarjetaService.obtenerPorId(id);
-        
+
         if (resultado.correct) {
             return ResponseEntity.ok(resultado);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultado);
         }
     }
-    
 
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<Result> obtenerPorUsuario(@PathVariable Long usuarioId) {
-        Result resultado = tarjetaService.obtenerPorUsuario(usuarioId);
-        return ResponseEntity.ok(resultado);
-    }
-    
-    
-    @GetMapping("/usuario/{usuarioId}/activas")
-    public ResponseEntity<Result> obtenerActivasPorUsuario(@PathVariable Long usuarioId) {
-        Result resultado = tarjetaService.obtenerActivasPorUsuario(usuarioId);
-        return ResponseEntity.ok(resultado);
-    }
-    
+//    @GetMapping("/usuario/{usuarioId}")
+//    public ResponseEntity<Result> obtenerPorUsuario(@PathVariable Long usuarioId) {
+//        Result resultado = tarjetaService.obtenerPorUsuario(usuarioId);
+//        return ResponseEntity.ok(resultado);
+//    }
 
-    @PostMapping("/{id}/agregar-saldo")
-    public ResponseEntity<Result> agregarSaldo(@PathVariable Long id,
-                                                @Valid @RequestBody AgregarSaldoDTO dto,
-                                                BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errores = bindingResult.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .reduce("", (a, b) -> a + "; " + b);
-            return ResponseEntity.badRequest().body(Result.error("Errores de validación: " + errores));
-        }
-        
-        Result resultado = tarjetaService.agregarSaldo(id, dto);
-        
-        if (resultado.correct) {
-            return ResponseEntity.ok(resultado);
-        } else {
-            return ResponseEntity.badRequest().body(resultado);
-        }
-    }
-    
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Result> eliminarTarjeta(@PathVariable Long id) {
-        Result resultado = tarjetaService.eliminarTarjeta(id);
-        
-        if (resultado.correct) {
-            return ResponseEntity.ok(resultado);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultado);
-        }
-    }
 }

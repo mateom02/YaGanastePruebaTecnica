@@ -40,6 +40,7 @@ public class UsuarioService {
         }
     }
 
+    //validacion si no existen usuarios registrados
     public Result obtenerTodos() {
         try {
             List<Usuario> usuarios = usuarioRepository.findAll();
@@ -64,19 +65,7 @@ public class UsuarioService {
         }
     }
 
-    public Result obtenerConTarjetas(Long id) {
-        try {
-            Optional<Usuario> usuario = usuarioRepository.findByIdWithTarjetas(id);
-
-            if (usuario.isEmpty()) {
-                return Result.error("Usuario no encontrado con ID: " + id);
-            }
-
-            return Result.success(usuario.get());
-        } catch (Exception e) {
-            return Result.error("Error al obtener el usuario con tarjetas: " + e.getMessage(), e);
-        }
-    }
+    
 
     @Transactional
     public Result actualizarUsuario(Long id, UsuarioCreateDTO dto) {
@@ -107,46 +96,9 @@ public class UsuarioService {
         }
     }
 
-    @Transactional
-    public Result eliminarUsuario(Long id) {
-        try {
-            Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
+  
 
-            if (usuarioOpt.isEmpty()) {
-                return Result.error("Usuario no encontrado con ID: " + id);
-            }
 
-            Usuario usuario = usuarioOpt.get();
-            usuario.setActivo(false);
 
-            // Desactivar todas las tarjetas del usuario
-            usuario.getTarjetas().forEach(tarjeta -> tarjeta.setActiva(false));
-
-            usuarioRepository.save(usuario);
-            return Result.success();
-
-        } catch (Exception e) {
-            return Result.error("Error al eliminar el usuario: " + e.getMessage(), e);
-        }
-    }
-
-    public Result buscarPorNombre(String busqueda) {
-        try {
-            List<Usuario> usuarios = usuarioRepository.buscarPorNombreOApellido(busqueda);
-            List<Object> resultado = new ArrayList<>(usuarios);
-            return Result.success(resultado);
-        } catch (Exception e) {
-            return Result.error("Error al buscar usuarios: " + e.getMessage(), e);
-        }
-    }
-
-    public Result obtenerActivos() {
-        try {
-            List<Usuario> usuarios = usuarioRepository.findByActivo(true);
-            List<Object> resultado = new ArrayList<>(usuarios);
-            return Result.success(resultado);
-        } catch (Exception e) {
-            return Result.error("Error al obtener usuarios activos: " + e.getMessage(), e);
-        }
-    }
+ 
 }

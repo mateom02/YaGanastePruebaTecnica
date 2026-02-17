@@ -38,14 +38,14 @@ public class UsuarioController {
         }
     }
     
-    
+    //validacion si no existen registradas
     @GetMapping
     public ResponseEntity<Result> obtenerTodos() {
         Result resultado = usuarioService.obtenerTodos();
         return ResponseEntity.ok(resultado);
     }
     
-
+//validacion por si no hay existentes
     @GetMapping("/{id}")
     public ResponseEntity<Result> obtenerPorId(@PathVariable Long id) {
         Result resultado = usuarioService.obtenerPorId(id);
@@ -57,17 +57,6 @@ public class UsuarioController {
         }
     }
     
-
-    @GetMapping("/{id}/con-tarjetas")
-    public ResponseEntity<Result> obtenerConTarjetas(@PathVariable Long id) {
-        Result resultado = usuarioService.obtenerConTarjetas(id);
-        
-        if (resultado.correct) {
-            return ResponseEntity.ok(resultado);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultado);
-        }
-    }
     
     @PutMapping("/{id}")
     public ResponseEntity<Result> actualizarUsuario(@PathVariable Long id,
@@ -90,28 +79,4 @@ public class UsuarioController {
     }
     
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Result> eliminarUsuario(@PathVariable Long id) {
-        Result resultado = usuarioService.eliminarUsuario(id);
-        
-        if (resultado.correct) {
-            return ResponseEntity.ok(resultado);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultado);
-        }
-    }
-    
-
-    @GetMapping("/buscar")
-    public ResponseEntity<Result> buscarPorNombre(@RequestParam String q) {
-        Result resultado = usuarioService.buscarPorNombre(q);
-        return ResponseEntity.ok(resultado);
-    }
-    
-
-    @GetMapping("/activos")
-    public ResponseEntity<Result> obtenerActivos() {
-        Result resultado = usuarioService.obtenerActivos();
-        return ResponseEntity.ok(resultado);
-    }
 }

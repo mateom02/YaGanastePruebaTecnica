@@ -27,7 +27,6 @@ public class TarjetaService {
     @Transactional
     public Result crearTarjeta(TarjetaCreateDTO dto) {
         try {
-            // Validar que el usuario exista
             Optional<Usuario> usuarioOpt = usuarioRepository.findById(dto.getIdUsuario());
             if (usuarioOpt.isEmpty()) {
                 return Result.error("Usuario no encontrado con ID: " + dto.getIdUsuario());
@@ -39,19 +38,16 @@ public class TarjetaService {
                 return Result.error("El usuario está inactivo");
             }
             
-            // Validar que no exista una tarjeta con ese número
             if (tarjetaRepository.existsByNumeroTarjeta(dto.getNumeroTarjeta())) {
                 return Result.error("Ya existe una tarjeta con ese número");
             }
             
-            // Crear la tarjeta según el tipo (POLIMORFISMO)
             Tarjeta tarjeta = crearTarjetaPorTipo(dto);
             
             if (tarjeta == null) {
                 return Result.error("Tipo de tarjeta no válido: " + dto.getTipoTarjeta());
             }
             
-            // Agregar la tarjeta al usuario
             usuario.agregarTarjeta(tarjeta);
             
             Tarjeta tarjetaGuardada = tarjetaRepository.save(tarjeta);
@@ -143,56 +139,9 @@ public class TarjetaService {
         }
     }
 
-    @Transactional
-    public Result agregarSaldo(Long id, AgregarSaldoDTO dto) {
-        try {
-            Optional<Tarjeta> tarjetaOpt = tarjetaRepository.findById(id);
-            
-            if (tarjetaOpt.isEmpty()) {
-                return Result.error("Tarjeta no encontrada con ID: " + id);
-            }
-            
-            Tarjeta tarjeta = tarjetaOpt.get();
-            
-            // Llamada polimórfica al método add()
-            // Cada tipo de tarjeta ejecutará su propia implementación
-            tarjeta.add(dto.getMonto());
-            
-            Tarjeta tarjetaActualizada = tarjetaRepository.save(tarjeta);
-            return Result.success(tarjetaActualizada);
-            
-        } catch (Exception e) {
-            return Result.error("Error al agregar saldo: " + e.getMessage(), e);
-        }
-    }
+
     
-    @Transactional
-    public Result eliminarTarjeta(Long id) {
-        try {
-            Optional<Tarjeta> tarjetaOpt = tarjetaRepository.findById(id);
-            
-            if (tarjetaOpt.isEmpty()) {
-                return Result.error("Tarjeta no encontrada con ID: " + id);
-            }
-            
-            Tarjeta tarjeta = tarjetaOpt.get();
-            tarjeta.setActiva(false);
-            
-            tarjetaRepository.save(tarjeta);
-            return Result.success();
-            
-        } catch (Exception e) {
-            return Result.error("Error al eliminar la tarjeta: " + e.getMessage(), e);
-        }
-    }
+ 
     
-    public Result obtenerActivasPorUsuario(Long usuarioId) {
-        try {
-            List<Tarjeta> tarjetas = tarjetaRepository.findByIdUsuarioAndActiva(usuarioId, true);
-            List<Object> resultado = new ArrayList<>(tarjetas);
-            return Result.success(resultado);
-        } catch (Exception e) {
-            return Result.error("Error al obtener tarjetas activas: " + e.getMessage(), e);
-        }
-    }
+   
 }

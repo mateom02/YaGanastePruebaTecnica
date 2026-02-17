@@ -11,13 +11,13 @@ import java.time.LocalDate;
 @DiscriminatorValue("NOMINA")
 public class TarjetaNomina extends Tarjeta {
     
-    @Column(name = "EMPRESA", length = 100)
+    @Column(name = "empresa", length = 100)
     private String empresa;
     
-    @Column(name = "NUMERO_EMPLEADO", length = 50)
+    @Column(name = "numeroempleado", length = 50)
     private String numeroEmpleado;
     
-    @Column(name = "DEPOSITO_MENSUAL", precision = 15, scale = 2)
+    @Column(name = "depositomensual", precision = 15, scale = 2)
     private BigDecimal depositoMensual;
     
     // Constructor por defecto
