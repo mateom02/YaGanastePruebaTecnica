@@ -45,7 +45,7 @@ public class UsuarioController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
-        @ApiResponse(responseCode = "422", description = "No hay usuarios registrados")
+        @ApiResponse(responseCode = "204", description = "No hay usuarios registrados")
     })
     @GetMapping
     public ResponseEntity<Result> obtenerTodos() {

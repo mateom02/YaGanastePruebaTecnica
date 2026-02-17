@@ -46,7 +46,7 @@ public class TarjetaController {
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
-        @ApiResponse(responseCode = "422", description = "No hay tarjetas registradas")
+        @ApiResponse(responseCode = "204", description = "No hay tarjetas registradas")
     })
     @GetMapping
     public ResponseEntity<Result> obtenerTodas() {
@@ -61,7 +61,7 @@ public class TarjetaController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Tarjetas obtenidas exitosamente"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-        @ApiResponse(responseCode = "422", description = "El usuario no tiene tarjetas registradas")
+        @ApiResponse(responseCode = "204", description = "El usuario no tiene tarjetas registradas")
     })
     @GetMapping("/usuario/{id}")
     public ResponseEntity<Result> obtenerPorUsuario(
