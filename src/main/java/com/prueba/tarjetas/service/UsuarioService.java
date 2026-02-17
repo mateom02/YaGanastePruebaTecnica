@@ -1,6 +1,9 @@
 package com.prueba.tarjetas.service;
 
 import com.prueba.tarjetas.dto.UsuarioCreateDTO;
+import com.prueba.tarjetas.exceptions.DuplicateResourceException;
+import com.prueba.tarjetas.exceptions.NotFoundException;
+import com.prueba.tarjetas.exceptions.ValidationException;
 import com.prueba.tarjetas.model.Usuario;
 import com.prueba.tarjetas.repository.UsuarioRepository;
 import com.prueba.tarjetas.util.Result;
@@ -20,10 +23,19 @@ public class UsuarioService {
 
     @Transactional
     public Result crearUsuario(UsuarioCreateDTO dto) {
+        Result result = new Result();
         try {
-            // Validar que el email no esté registrado
+            // Validaciones
+            if (dto.getEmail() == null || dto.getEmail().isBlank()) {
+                throw new ValidationException("email", "El email no puede estar vacío.");
+            }
+
+            if (dto.getNombre() == null || dto.getNombre().isBlank()) {
+                throw new ValidationException("nombre", "El nombre no puede estar vacío.");
+            }
+
             if (usuarioRepository.existsByEmail(dto.getEmail())) {
-                return Result.error("Ya existe un usuario con ese email");
+                throw new DuplicateResourceException("Usuario", "email", dto.getEmail());
             }
 
             Usuario usuario = new Usuario();
@@ -33,72 +45,59 @@ public class UsuarioService {
             usuario.setActivo(true);
 
             Usuario usuarioGuardado = usuarioRepository.save(usuario);
-            return Result.success(usuarioGuardado);
+            result.correct = true;
+            result.object = usuarioGuardado;
 
-        } catch (Exception e) {
-            return Result.error("Error al crear el usuario: " + e.getMessage(), e);
+        } catch (ValidationException | DuplicateResourceException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw ex;
         }
+        return result;
     }
 
-    //validacion si no existen usuarios registrados
     public Result obtenerTodos() {
-        try {
-            List<Usuario> usuarios = usuarioRepository.findAll();
-            List<Object> resultado = new ArrayList<>(usuarios);
-            return Result.success(resultado);
-        } catch (Exception e) {
-            return Result.error("Error al obtener usuarios: " + e.getMessage(), e);
-        }
+        List<Object> lista = usuarioRepository.findAll()
+                .stream()
+                .map(u -> (Object) u)
+                .toList();
+
+        Result result = new Result();
+        result.correct = true;
+        result.objects = lista;
+
+        return result;
     }
 
     public Result obtenerPorId(Long id) {
-        try {
-            Optional<Usuario> usuario = usuarioRepository.findById(id);
+        Result result = new Result();
 
-            if (usuario.isEmpty()) {
-                return Result.error("Usuario no encontrado con ID: " + id);
-            }
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Usuario", id));
 
-            return Result.success(usuario.get());
-        } catch (Exception e) {
-            return Result.error("Error al obtener el usuario: " + e.getMessage(), e);
-        }
+        result.correct = true;
+        result.object = usuario;
+        return result;
     }
-
-    
 
     @Transactional
     public Result actualizarUsuario(Long id, UsuarioCreateDTO dto) {
-        try {
-            Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Usuario", id));
 
-            if (usuarioOpt.isEmpty()) {
-                return Result.error("Usuario no encontrado con ID: " + id);
-            }
-
-            Usuario usuario = usuarioOpt.get();
-
-            // Validar que el email no esté registrado por otro usuario
-            if (!usuario.getEmail().equals(dto.getEmail())
-                    && usuarioRepository.existsByEmail(dto.getEmail())) {
-                return Result.error("Ya existe otro usuario con ese email");
-            }
-
-            usuario.setNombre(dto.getNombre());
-            usuario.setApellido(dto.getApellido());
-            usuario.setEmail(dto.getEmail());
-
-            Usuario usuarioActualizado = usuarioRepository.save(usuario);
-            return Result.success(usuarioActualizado);
-
-        } catch (Exception e) {
-            return Result.error("Error al actualizar el usuario: " + e.getMessage(), e);
+        if (!usuario.getEmail().equals(dto.getEmail())
+                && usuarioRepository.existsByEmail(dto.getEmail())) {
+            throw new DuplicateResourceException("Usuario", "email", dto.getEmail());
         }
+
+        usuario.setNombre(dto.getNombre());
+        usuario.setApellido(dto.getApellido());
+        usuario.setEmail(dto.getEmail());
+
+        Result result = new Result();
+        result.correct = true;
+        result.object = usuarioRepository.save(usuario);
+        return result;
     }
 
-  
-
-
-
- 
 }

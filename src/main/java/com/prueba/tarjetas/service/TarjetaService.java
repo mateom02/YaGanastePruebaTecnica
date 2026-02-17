@@ -1,7 +1,10 @@
 package com.prueba.tarjetas.service;
 
-import com.prueba.tarjetas.dto.AgregarSaldoDTO;
 import com.prueba.tarjetas.dto.TarjetaCreateDTO;
+import com.prueba.tarjetas.exceptions.BusinessException;
+import com.prueba.tarjetas.exceptions.DuplicateResourceException;
+import com.prueba.tarjetas.exceptions.NotFoundException;
+import com.prueba.tarjetas.exceptions.ValidationException;
 import com.prueba.tarjetas.model.*;
 import com.prueba.tarjetas.repository.TarjetaRepository;
 import com.prueba.tarjetas.repository.UsuarioRepository;
@@ -13,73 +16,69 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TarjetaService {
-    
+
     @Autowired
     private TarjetaRepository tarjetaRepository;
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     @Transactional
     public Result crearTarjeta(TarjetaCreateDTO dto) {
-        try {
-            Optional<Usuario> usuarioOpt = usuarioRepository.findById(dto.getIdUsuario());
-            if (usuarioOpt.isEmpty()) {
-                return Result.error("Usuario no encontrado con ID: " + dto.getIdUsuario());
-            }
-            
-            Usuario usuario = usuarioOpt.get();
-            
-            if (!usuario.getActivo()) {
-                return Result.error("El usuario está inactivo");
-            }
-            
-            if (tarjetaRepository.existsByNumeroTarjeta(dto.getNumeroTarjeta())) {
-                return Result.error("Ya existe una tarjeta con ese número");
-            }
-            
-            Tarjeta tarjeta = crearTarjetaPorTipo(dto);
-            
-            if (tarjeta == null) {
-                return Result.error("Tipo de tarjeta no válido: " + dto.getTipoTarjeta());
-            }
-            
-            usuario.agregarTarjeta(tarjeta);
-            
-            Tarjeta tarjetaGuardada = tarjetaRepository.save(tarjeta);
-            return Result.success(tarjetaGuardada);
-            
-        } catch (Exception e) {
-            return Result.error("Error al crear la tarjeta: " + e.getMessage(), e);
+        Result result = new Result();
+
+        Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
+                .orElseThrow(() -> new NotFoundException("Usuario", dto.getIdUsuario()));
+
+        if (tarjetaRepository.existsByNumeroTarjeta(dto.getNumeroTarjeta())) {
+            throw new DuplicateResourceException("Tarjeta", "número", dto.getNumeroTarjeta());
         }
+
+        if (!dto.getNumeroTarjeta().matches("\\d{16}")) {
+            throw new ValidationException("numeroTarjeta", "Debe contener exactamente 16 dígitos.");
+        }
+
+        try {
+            Tarjeta tarjeta = crearTarjetaPorTipo(dto);
+            usuario.agregarTarjeta(tarjeta);
+            result.correct = true;
+            result.object = tarjeta;
+
+        } catch (BusinessException ex) {
+            throw ex;
+        } catch (ValidationException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new BusinessException("ERROR_CREACION", ex.getMessage());
+        }
+        return result;
     }
-    
+
     private Tarjeta crearTarjetaPorTipo(TarjetaCreateDTO dto) {
         LocalDate fechaVencimiento = LocalDate.parse(dto.getFechaVencimiento());
-        
+
         switch (dto.getTipoTarjeta().toUpperCase()) {
             case "CREDITO":
                 TarjetaCredito credito = new TarjetaCredito(
-                    dto.getNumeroTarjeta(),
-                    dto.getTitular(),
-                    fechaVencimiento,
-                    dto.getLimiteCredito()
+                        dto.getNumeroTarjeta(),
+                        dto.getTitular(),
+                        fechaVencimiento,
+                        dto.getLimiteCredito()
                 );
                 if (dto.getTasaInteres() != null) {
                     credito.setTasaInteres(dto.getTasaInteres());
                 }
                 return credito;
-                
+
             case "DEBITO":
                 TarjetaDebito debito = new TarjetaDebito(
-                    dto.getNumeroTarjeta(),
-                    dto.getTitular(),
-                    fechaVencimiento,
-                    dto.getCuentaAsociada()
+                        dto.getNumeroTarjeta(),
+                        dto.getTitular(),
+                        fechaVencimiento,
+                        dto.getCuentaAsociada()
                 );
                 if (dto.getPermiteSobregiro() != null) {
                     debito.setPermiteSobregiro(dto.getPermiteSobregiro());
@@ -88,60 +87,52 @@ public class TarjetaService {
                     debito.setLimiteSobregiro(dto.getLimiteSobregiro());
                 }
                 return debito;
-                
+
             case "NOMINA":
                 TarjetaNomina nomina = new TarjetaNomina(
-                    dto.getNumeroTarjeta(),
-                    dto.getTitular(),
-                    fechaVencimiento,
-                    dto.getEmpresa(),
-                    dto.getNumeroEmpleado()
+                        dto.getNumeroTarjeta(),
+                        dto.getTitular(),
+                        fechaVencimiento,
+                        dto.getEmpresa(),
+                        dto.getNumeroEmpleado()
                 );
                 return nomina;
-                
+
             default:
-                return null;
+                throw new BusinessException("TIPO_INVALIDO",
+                        "Tipo de tarjeta no soportado: " + dto.getTipoTarjeta());
         }
     }
-    
+
     public Result obtenerTodas() {
-        try {
-            List<Tarjeta> tarjetas = tarjetaRepository.findAll();
-            List<Object> resultado = new ArrayList<>(tarjetas);
-            return Result.success(resultado);
-        } catch (Exception e) {
-            return Result.error("Error al obtener tarjetas: " + e.getMessage(), e);
-        }
-    }
-    
+        List<Tarjeta> tarjetas = tarjetaRepository.findAll();
 
-    public Result obtenerPorId(Long id) {
-        try {
-            Optional<Tarjeta> tarjeta = tarjetaRepository.findById(id);
-            
-            if (tarjeta.isEmpty()) {
-                return Result.error("Tarjeta no encontrada con ID: " + id);
-            }
-            
-            return Result.success(tarjeta.get());
-        } catch (Exception e) {
-            return Result.error("Error al obtener la tarjeta: " + e.getMessage(), e);
+        if (tarjetas.isEmpty()) {
+            throw new BusinessException("SIN_TARJETAS", "No hay tarjetas registradas.");
         }
+
+        Result result = new Result();
+        result.correct = true;
+        result.objects = new ArrayList<>(tarjetas);
+        return result;
     }
-    
+
     public Result obtenerPorUsuario(Long usuarioId) {
-        try {
-            List<Tarjeta> tarjetas = tarjetaRepository.findByUsuario(usuarioId);
-            List<Object> resultado = new ArrayList<>(tarjetas);
-            return Result.success(resultado);
-        } catch (Exception e) {
-            return Result.error("Error al obtener tarjetas del usuario: " + e.getMessage(), e);
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new NotFoundException("Usuario", usuarioId);
         }
+
+        List<Tarjeta> tarjetas = tarjetaRepository.findByUsuario(usuarioId);
+
+        if (tarjetas.isEmpty()) {
+            throw new BusinessException("SIN_TARJETAS",
+                    "El usuario con id " + usuarioId + " no tiene tarjetas registradas.");
+        }
+
+        Result result = new Result();
+        result.correct = true;
+        result.objects = new ArrayList<>(tarjetas);
+        return result;
     }
 
-
-    
- 
-    
-   
 }

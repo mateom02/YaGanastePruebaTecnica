@@ -24,7 +24,6 @@ public class TarjetaCreateDTO {
     private String tipoTarjeta;
     
     // Campos específicos para tarjeta de crédito
-    @Positive(message = "El límite de crédito debe ser positivo")
     private BigDecimal limiteCredito;
     private BigDecimal tasaInteres;
     

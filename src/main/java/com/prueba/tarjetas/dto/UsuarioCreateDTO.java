@@ -22,9 +22,6 @@ public class UsuarioCreateDTO {
     @Email(message = "El email debe ser válido")
     private String email;
     
-    @NotBlank(message = "El teléfono es obligatorio")
-    @Pattern(regexp = "^[0-9]{10}$", message = "El teléfono debe tener 10 dígitos")
-    private String telefono;
     
     // Constructores
     public UsuarioCreateDTO() {}
@@ -33,7 +30,6 @@ public class UsuarioCreateDTO {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
-        this.telefono = telefono;
     }
     
     // Getters y Setters
@@ -61,11 +57,4 @@ public class UsuarioCreateDTO {
         this.email = email;
     }
     
-    public String getTelefono() {
-        return telefono;
-    }
-    
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
 }

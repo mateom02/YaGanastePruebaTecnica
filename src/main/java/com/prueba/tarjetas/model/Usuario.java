@@ -32,7 +32,7 @@ public class Usuario {
     @Column(name = "email", nullable = false, unique = true, length = 150)
     private String email;
     
-    @Column(name = "ACTIVO", nullable = false)
+    @Column(name = "activo", nullable = false)
     private Boolean activo = true;
     
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -52,40 +52,6 @@ public class Usuario {
         this.tarjetas = new ArrayList<>();
     }
     
-
-    public void agregarTarjeta(Tarjeta tarjeta) throws Exception {
-        if (tarjeta == null) {
-            throw new Exception("La tarjeta no puede ser nula");
-        }
-        
-        if (!this.activo) {
-            throw new Exception("El usuario está inactivo, no se pueden agregar tarjetas");
-        }
-        
-        // Verificar que no exista una tarjeta con el mismo número
-        boolean existe = this.tarjetas.stream()
-                .anyMatch(t -> t.getNumeroTarjeta().equals(tarjeta.getNumeroTarjeta()));
-        
-        if (existe) {
-            throw new Exception("Ya existe una tarjeta con ese número");
-        }
-        
-        tarjeta.setUsuario(this);
-        this.tarjetas.add(tarjeta);
-    }
-  
-    public void eliminarTarjeta(Tarjeta tarjeta) throws Exception {
-        if (tarjeta == null) {
-            throw new Exception("La tarjeta no puede ser nula");
-        }
-        
-        if (!this.tarjetas.contains(tarjeta)) {
-            throw new Exception("La tarjeta no pertenece a este usuario");
-        }
-        
-        this.tarjetas.remove(tarjeta);
-        tarjeta.setUsuario(null);
-    }
     
     public List<Tarjeta> getTarjetasActivas() {
         return this.tarjetas.stream()
