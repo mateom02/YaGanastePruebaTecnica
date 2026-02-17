@@ -42,7 +42,7 @@ public abstract class Tarjeta {
     private Boolean activa = true;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "idUsuario", nullable = false)
+    @JoinColumn(name = "idusuario", nullable = false)
     @JsonIgnore
     private Usuario usuario;
     
@@ -58,9 +58,7 @@ public abstract class Tarjeta {
         this.saldo = BigDecimal.ZERO;
         this.activa = true;
     }
-    
-    public abstract void add(BigDecimal monto) throws Exception;
-   
+       
     public boolean estaVencida() {
         return LocalDate.now().isAfter(fechaVencimiento);
     }

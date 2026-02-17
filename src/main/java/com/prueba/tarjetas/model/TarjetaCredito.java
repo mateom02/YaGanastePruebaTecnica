@@ -36,51 +36,6 @@ public class TarjetaCredito extends Tarjeta {
         this.setSaldo(limiteCredito);
     }
     
-
-    @Override
-    public void add(BigDecimal monto) throws Exception {
-        if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new Exception("El monto debe ser mayor a cero");
-        }
-        
-        if (!this.getActiva()) {
-            throw new Exception("La tarjeta está inactiva");
-        }
-        
-        if (this.estaVencida()) {
-            throw new Exception("La tarjeta está vencida");
-        }
-        
-        BigDecimal nuevoSaldo = this.getSaldo().add(monto);
-        
-        if (nuevoSaldo.compareTo(limiteCredito) > 0) {
-            throw new Exception("El pago excede el límite de crédito disponible");
-        }
-        
-        this.setSaldo(nuevoSaldo);
-    }
-    
-    
-    public void cargar(BigDecimal monto) throws Exception {
-        if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new Exception("El monto debe ser mayor a cero");
-        }
-        
-        if (!this.getActiva()) {
-            throw new Exception("La tarjeta está inactiva");
-        }
-        
-        if (this.estaVencida()) {
-            throw new Exception("La tarjeta está vencida");
-        }
-        
-        if (this.getSaldo().compareTo(monto) < 0) {
-            throw new Exception("Saldo insuficiente. Disponible: " + this.getSaldo());
-        }
-        
-        this.setSaldo(this.getSaldo().subtract(monto));
-    }
-    
     @Override
     public String getTipoTarjeta() {
         return "CREDITO";

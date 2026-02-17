@@ -34,11 +34,11 @@ public class TarjetaService {
                 .orElseThrow(() -> new NotFoundException("Usuario", dto.getIdUsuario()));
 
         if (tarjetaRepository.existsByNumeroTarjeta(dto.getNumeroTarjeta())) {
-            throw new DuplicateResourceException("Tarjeta", "número", dto.getNumeroTarjeta());
+            throw new DuplicateResourceException("Tarjeta", "numero", dto.getNumeroTarjeta());
         }
 
         if (!dto.getNumeroTarjeta().matches("\\d{16}")) {
-            throw new ValidationException("numeroTarjeta", "Debe contener exactamente 16 dígitos.");
+            throw new ValidationException("numeroTarjeta", "Debe contener exactamente 16 digitos.");
         }
 
         try {
@@ -68,6 +68,9 @@ public class TarjetaService {
                         fechaVencimiento,
                         dto.getLimiteCredito()
                 );
+                if (dto.getLimiteCredito() != null) {
+                    credito.setLimiteCredito(dto.getLimiteCredito());
+                }
                 if (dto.getTasaInteres() != null) {
                     credito.setTasaInteres(dto.getTasaInteres());
                 }
@@ -80,22 +83,24 @@ public class TarjetaService {
                         fechaVencimiento,
                         dto.getCuentaAsociada()
                 );
-                if (dto.getPermiteSobregiro() != null) {
-                    debito.setPermiteSobregiro(dto.getPermiteSobregiro());
+                if (dto.getCuentaAsociada() != null) {
+                    debito.setCuentaAsociada(dto.getCuentaAsociada());
                 }
-                if (dto.getLimiteSobregiro() != null) {
-                    debito.setLimiteSobregiro(dto.getLimiteSobregiro());
-                }
+
                 return debito;
 
             case "NOMINA":
                 TarjetaNomina nomina = new TarjetaNomina(
                         dto.getNumeroTarjeta(),
                         dto.getTitular(),
-                        fechaVencimiento,
-                        dto.getEmpresa(),
-                        dto.getNumeroEmpleado()
+                        fechaVencimiento
                 );
+                if (dto.getEmpresa() != null) {
+                    nomina.setEmpresa(dto.getEmpresa());
+                }
+                if (dto.getDepositoMensual()!= null) {
+                    nomina.setDepositoMensual(dto.getDepositoMensual());
+                }
                 return nomina;
 
             default:

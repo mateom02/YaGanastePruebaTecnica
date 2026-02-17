@@ -14,9 +14,6 @@ public class TarjetaNomina extends Tarjeta {
     @Column(name = "empresa", length = 100)
     private String empresa;
     
-    @Column(name = "numeroempleado", length = 50)
-    private String numeroEmpleado;
-    
     @Column(name = "depositomensual", precision = 15, scale = 2)
     private BigDecimal depositoMensual;
     
@@ -27,70 +24,11 @@ public class TarjetaNomina extends Tarjeta {
     }
     
     // Constructor con parámetros
-    public TarjetaNomina(String numeroTarjeta, String titular, LocalDate fechaVencimiento,
-                         String empresa, String numeroEmpleado) {
+    public TarjetaNomina(String numeroTarjeta, String titular, LocalDate fechaVencimiento
+                         ) {
         super(numeroTarjeta, titular, fechaVencimiento);
-        this.empresa = empresa;
-        this.numeroEmpleado = numeroEmpleado;
-        this.depositoMensual = BigDecimal.ZERO;
     }
-    
-    /**
-     * Implementación del método add para tarjetas de nómina
-     * Permite depósitos de nómina y otros abonos
-     */
-    @Override
-    public void add(BigDecimal monto) throws Exception {
-        if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new Exception("El monto debe ser mayor a cero");
-        }
-        
-        if (!this.getActiva()) {
-            throw new Exception("La tarjeta está inactiva");
-        }
-        
-        if (this.estaVencida()) {
-            throw new Exception("La tarjeta está vencida");
-        }
-        
-        this.setSaldo(this.getSaldo().add(monto));
-    }
-    
-    /**
-     * Método específico para depositar la nómina mensual
-     */
-    public void depositarNomina(BigDecimal monto) throws Exception {
-        if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new Exception("El monto de la nómina debe ser mayor a cero");
-        }
-        
-        this.depositoMensual = monto;
-        this.add(monto);
-    }
-    
-    /**
-     * Método para realizar un retiro de la tarjeta de nómina
-     */
-    public void retirar(BigDecimal monto) throws Exception {
-        if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new Exception("El monto debe ser mayor a cero");
-        }
-        
-        if (!this.getActiva()) {
-            throw new Exception("La tarjeta está inactiva");
-        }
-        
-        if (this.estaVencida()) {
-            throw new Exception("La tarjeta está vencida");
-        }
-        
-        if (this.getSaldo().compareTo(monto) < 0) {
-            throw new Exception("Saldo insuficiente. Disponible: " + this.getSaldo());
-        }
-        
-        this.setSaldo(this.getSaldo().subtract(monto));
-    }
-    
+
     @Override
     public String getTipoTarjeta() {
         return "NOMINA";
@@ -103,14 +41,6 @@ public class TarjetaNomina extends Tarjeta {
     
     public void setEmpresa(String empresa) {
         this.empresa = empresa;
-    }
-    
-    public String getNumeroEmpleado() {
-        return numeroEmpleado;
-    }
-    
-    public void setNumeroEmpleado(String numeroEmpleado) {
-        this.numeroEmpleado = numeroEmpleado;
     }
     
     public BigDecimal getDepositoMensual() {

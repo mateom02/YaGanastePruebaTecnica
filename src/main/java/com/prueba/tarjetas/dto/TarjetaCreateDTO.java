@@ -29,12 +29,10 @@ public class TarjetaCreateDTO {
     
     // Campos específicos para tarjeta de débito
     private String cuentaAsociada;
-    private Boolean permiteSobregiro;
-    private BigDecimal limiteSobregiro;
     
     // Campos específicos para tarjeta de nómina
     private String empresa;
-    private String numeroEmpleado;
+    private  BigDecimal depositoMensual;
     
     // Constructores
     public TarjetaCreateDTO() {}
@@ -103,36 +101,22 @@ public class TarjetaCreateDTO {
     public void setCuentaAsociada(String cuentaAsociada) {
         this.cuentaAsociada = cuentaAsociada;
     }
-    
-    public Boolean getPermiteSobregiro() {
-        return permiteSobregiro;
-    }
-    
-    public void setPermiteSobregiro(Boolean permiteSobregiro) {
-        this.permiteSobregiro = permiteSobregiro;
-    }
-    
-    public BigDecimal getLimiteSobregiro() {
-        return limiteSobregiro;
-    }
-    
-    public void setLimiteSobregiro(BigDecimal limiteSobregiro) {
-        this.limiteSobregiro = limiteSobregiro;
-    }
-    
+
     public String getEmpresa() {
         return empresa;
     }
-    
+
     public void setEmpresa(String empresa) {
         this.empresa = empresa;
     }
-    
-    public String getNumeroEmpleado() {
-        return numeroEmpleado;
+
+    public BigDecimal getDepositoMensual() {
+        return depositoMensual;
+    }
+
+    public void setDepositoMensual(BigDecimal depositoMensual) {
+        this.depositoMensual = depositoMensual;
     }
     
-    public void setNumeroEmpleado(String numeroEmpleado) {
-        this.numeroEmpleado = numeroEmpleado;
-    }
+    
 }
