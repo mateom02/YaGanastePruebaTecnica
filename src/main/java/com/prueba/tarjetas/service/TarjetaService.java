@@ -44,8 +44,9 @@ public class TarjetaService {
         try {
             Tarjeta tarjeta = crearTarjetaPorTipo(dto);
             usuario.agregarTarjeta(tarjeta);
+            Tarjeta tarjetaGuardada = tarjetaRepository.save(tarjeta);
             result.correct = true;
-            result.object = tarjeta;
+            result.object = tarjetaGuardada;
 
         } catch (BusinessException ex) {
             throw ex;
@@ -98,7 +99,7 @@ public class TarjetaService {
                 if (dto.getEmpresa() != null) {
                     nomina.setEmpresa(dto.getEmpresa());
                 }
-                if (dto.getDepositoMensual()!= null) {
+                if (dto.getDepositoMensual() != null) {
                     nomina.setDepositoMensual(dto.getDepositoMensual());
                 }
                 return nomina;
