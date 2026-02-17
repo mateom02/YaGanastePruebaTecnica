@@ -1,5 +1,6 @@
 package com.prueba.tarjetas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -40,8 +41,9 @@ public abstract class Tarjeta {
     @Column(name = "activa", nullable = false)
     private Boolean activa = true;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idUsuario", nullable = false)
+    @JsonIgnore
     private Usuario usuario;
     
     public Tarjeta() {

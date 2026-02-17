@@ -11,19 +11,21 @@ import java.util.Optional;
 
 @Repository
 public interface TarjetaRepository extends JpaRepository<Tarjeta, Long> {
-    
-    Optional<Tarjeta> findByNumeroTarjeta(String numeroTarjeta);
-    
-    boolean existsByNumeroTarjeta(String numeroTarjeta);
-    
-    List<Tarjeta> findByUsuarioId(Long usuarioId);
 
-    List<Tarjeta> findByUsuarioIdAndActiva(Long usuarioId, Boolean activa);
-  
+    Optional<Tarjeta> findByNumeroTarjeta(String numeroTarjeta);
+
+    boolean existsByNumeroTarjeta(String numeroTarjeta);
+
+    @Query("SELECT t FROM Tarjeta t WHERE t.usuario.idUsuario = :usuarioId")
+    List<Tarjeta> findByUsuario(Long usuarioId);
+
+    @Query("SELECT t FROM Tarjeta t WHERE t.usuario.idUsuario = :usuarioId AND activa= :activa")
+    List<Tarjeta> findByIdUsuarioAndActiva(Long usuarioId, Boolean activa);
+
     @Query("SELECT t FROM Tarjeta t WHERE TYPE(t) = :tipo")
     List<Tarjeta> findByTipo(@Param("tipo") Class<? extends Tarjeta> tipo);
-    
+
     @Query("SELECT t FROM Tarjeta t WHERE t.usuario.id = :usuarioId AND TYPE(t) = :tipo")
-    List<Tarjeta> findByUsuarioIdAndTipo(@Param("usuarioId") Long usuarioId, 
-                                          @Param("tipo") Class<? extends Tarjeta> tipo);
+    List<Tarjeta> findByIdUsuarioAndTipo(@Param("usuarioId") Long usuarioId,
+            @Param("tipo") Class<? extends Tarjeta> tipo);
 }

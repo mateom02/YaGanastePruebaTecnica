@@ -135,7 +135,7 @@ public class TarjetaService {
     
     public Result obtenerPorUsuario(Long usuarioId) {
         try {
-            List<Tarjeta> tarjetas = tarjetaRepository.findByUsuarioId(usuarioId);
+            List<Tarjeta> tarjetas = tarjetaRepository.findByUsuario(usuarioId);
             List<Object> resultado = new ArrayList<>(tarjetas);
             return Result.success(resultado);
         } catch (Exception e) {
@@ -188,7 +188,7 @@ public class TarjetaService {
     
     public Result obtenerActivasPorUsuario(Long usuarioId) {
         try {
-            List<Tarjeta> tarjetas = tarjetaRepository.findByUsuarioIdAndActiva(usuarioId, true);
+            List<Tarjeta> tarjetas = tarjetaRepository.findByIdUsuarioAndActiva(usuarioId, true);
             List<Object> resultado = new ArrayList<>(tarjetas);
             return Result.success(resultado);
         } catch (Exception e) {
